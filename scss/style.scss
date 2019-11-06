@@ -1,0 +1,68 @@
+body{
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(1, auto);
+    grid-template-rows: repeat(2, auto);
+}
+
+#input{
+    display:grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+    padding: 25px 50px;
+    background: yellow;
+    margin: auto;
+    width: 500px;
+}
+
+#UITitle{
+    grid-row: 1;
+    grid-column: 1;
+    position: relative;
+    left: 60%;
+}
+
+#UIWord{
+    grid-row: 1;
+    grid-column: 2;
+    width: 100px;
+    position: relative;
+    right: 6.5%;
+}
+
+#check{
+    grid-row: 2;
+    grid-column: 2;
+    width: 106px;
+    position: relative;
+    right: 6.5%;
+}
+
+#bord{
+    display:grid;
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(5, 100px);
+    margin: auto;
+    background: black;
+    border: 50px solid yellow;
+    border-top: 0px;
+    background: white;
+}
+
+#gap{
+    border: 1px solid black;
+    padding: 40px 45px;
+}
+
+.rechthoek{
+    background: green;
+}
+
+.vierkant{
+    background: red;
+}
+
+.rondje{
+    background: yellow;
+    border-radius: 100px;
+}
