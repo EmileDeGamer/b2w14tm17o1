@@ -25,7 +25,6 @@ function setup(){
 }
 
 console.log(words[word])
-console.log(gaps)
 
 function checkWord(){
     if (UIWord.value.length == 5){
@@ -55,10 +54,9 @@ function checkWord(){
                 if (guessedLetters[i] !== "" && tries > 1){
                     gaps[i + 5].innerHTML = guessedLetters[i]
                 }
-                else if (tries == 1){
+                else if (guessedLetters[i] !== "" && tries == 1){
                     gaps[i].innerHTML = guessedLetters[i]
                 }
-                console.log(duplicateLetters)
             }
             else if (!lettersWord.includes(lettersUIWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
@@ -66,7 +64,7 @@ function checkWord(){
                 if (guessedLetters[i] !== "" && tries > 1){
                     gaps[i + 5].innerHTML = guessedLetters[i]
                 }
-                else if (tries == 1){
+                else if (guessedLetters[i] !== "" && tries == 1){
                     gaps[i].innerHTML = guessedLetters[i]
                 }
             }
@@ -81,6 +79,31 @@ function checkWord(){
 function checkTries(){
     tries--
     if (tries <= 0){
+        UIWord.value = words[word]
         check.disabled = true
     }
 }
+
+function count() {
+    lettersWord.sort();
+
+    var current = null;
+    var cnt = 0;
+    for (var i = 0; i < lettersWord.length; i++) {
+        if (lettersWord[i] != current) {
+            if (cnt > 0) {
+                document.write(current + ' comes --> ' + cnt + ' times<br>');
+            }
+            current = lettersWord[i];
+            cnt = 1;
+        } else {
+            cnt++;
+        }
+    }
+    if (cnt > 0) {
+        document.write(current + ' comes --> ' + cnt + ' times');
+    }
+
+}
+
+count()
