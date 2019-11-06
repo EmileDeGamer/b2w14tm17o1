@@ -3,7 +3,7 @@ let check = document.getElementById('check')
 let UIWord = document.getElementById('UIWord')
 let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount = 25
 let guessedLetters = ["", "", "", "", ""]
-let duplicateLetters = []
+let duplicateLetters = [0, 0, 0, 0, 0]
 
 check.onclick = function(){checking()}
 
@@ -38,7 +38,7 @@ function count() {
 
 console.log(words[word])
 
-count()
+
 
 function checking(){
     if (UIWord.value.length == 5){
@@ -50,7 +50,7 @@ function checking(){
                 check.disabled = true
             }
             else if (lettersWord[i] == lettersUIWord[i]){
-                duplicateLetters[i]--
+                //duplicateLetters[i]++
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
                 if (guessedLetters[i] === ""){
@@ -65,28 +65,47 @@ function checking(){
                     }
                 }
             } 
-            else if (lettersWord.includes(lettersUIWord[i])){
+            else if (lettersUIWord.includes(lettersWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rondje"
-                if (guessedLetters[i] !== "" && tries > 1){
-                    gaps[i + 5].innerHTML = guessedLetters[i]
+                for (let i = 0; i < lettersWord.length; i++) {
+                    if (tries > 1){
+                        gaps[i + 5].innerHTML = guessedLetters[i]
+                    }
+                    else if (tries == 1){
+                        gaps[i].innerHTML = guessedLetters[i]
+                    }   
                 }
-                else if (guessedLetters[i] !== "" && tries == 1){
-                    gaps[i].innerHTML = guessedLetters[i]
-                }
+                /*for (let x = 0; x < lettersWord.length; x++) {
+                    if (lettersUIWord.includes(lettersWord[x])){
+                        gaps[i].innerHTML = lettersUIWord[i]
+                        gaps[i].className = "rondje"
+                        for (let i = 0; i < lettersWord.length; i++) {
+                            if (tries > 1){
+                                gaps[i + 5].innerHTML = guessedLetters[i]
+                            }
+                            else if (tries == 1){
+                                gaps[i].innerHTML = guessedLetters[i]
+                            }
+                        }
+                    }
+                }*/
+                //duplicateLetters[i]++
             }
-            else if (!lettersWord.includes(lettersUIWord[i])){
+            else if (!lettersUIWord.includes(lettersWord[i])){// || lettersWord.includes(lettersUIWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "vierkant"
-                if (guessedLetters[i] !== "" && tries > 1){
-                    gaps[i + 5].innerHTML = guessedLetters[i]
-                }
-                else if (guessedLetters[i] !== "" && tries == 1){
-                    gaps[i].innerHTML = guessedLetters[i]
+                for (let i = 0; i < lettersWord.length; i++) {
+                    if (tries > 1){
+                        gaps[i + 5].innerHTML = guessedLetters[i]
+                    }
+                    else if (tries == 1){
+                        gaps[i].innerHTML = guessedLetters[i]
+                    }
                 }
             }
         }
-        checkErrors()
+        //checkErrors()
         for (let i = 0; i < 5; i++) {
             gaps.shift() 
         }
