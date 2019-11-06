@@ -2,6 +2,8 @@ let bord = document.getElementById('bord')
 let check = document.getElementById('check')
 let UIWord = document.getElementById('UIWord')
 let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount = 25
+let guessedLetters = ["", "", "", "", ""]
+let duplicateLetters = []
 
 check.onclick = function(){checkWord()}
 
@@ -19,7 +21,11 @@ function setup(){
     }
     
     gaps[0].innerHTML = lettersWord[0]
+    guessedLetters[0] = lettersWord[0]
 }
+
+console.log(words[word])
+console.log(gaps)
 
 function checkWord(){
     if (UIWord.value.length == 5){
@@ -33,15 +39,36 @@ function checkWord(){
             else if (lettersWord[i] == lettersUIWord[i]){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
-                gaps[i + 5].innerHTML = lettersUIWord[i]
+                if (guessedLetters[i] === ""){
+                    guessedLetters[i] = lettersUIWord[i]
+                } 
+                if (tries > 1){
+                    gaps[i + 5].innerHTML = guessedLetters[i]
+                }
+                else if (tries == 1){
+                    gaps[i].innerHTML = guessedLetters[i]
+                }
             }
             else if (lettersWord.includes(lettersUIWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rondje"
+                if (guessedLetters[i] !== "" && tries > 1){
+                    gaps[i + 5].innerHTML = guessedLetters[i]
+                }
+                else if (tries == 1){
+                    gaps[i].innerHTML = guessedLetters[i]
+                }
+                console.log(duplicateLetters)
             }
             else if (!lettersWord.includes(lettersUIWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "vierkant"
+                if (guessedLetters[i] !== "" && tries > 1){
+                    gaps[i + 5].innerHTML = guessedLetters[i]
+                }
+                else if (tries == 1){
+                    gaps[i].innerHTML = guessedLetters[i]
+                }
             }
         }
         for (let i = 0; i < 5; i++) {
