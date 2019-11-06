@@ -4,51 +4,69 @@ let UIWord = document.getElementById('UIWord')
 let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount = 25
 let guessedLetters = ["", "", "", "", ""]
 let duplicateLetters = []
+let letter
 
-check.onclick = function(){checkWord()}
+check.onclick = function(){checking()}
 
 setup()
 
 function setup(){
     word = Math.floor(Math.random() * words.length) + 1
     lettersWord = words[word].split("")
-
     for (let i = 0; i < gapsAmount; i++) {
         let gap = document.createElement('span')
         gap.id = "gap"
         bord.appendChild(gap)
         gaps.push(gap)
     }
-    
     gaps[0].innerHTML = lettersWord[0]
     guessedLetters[0] = lettersWord[0]
 }
 
-console.log(words[word])
+function checkTries(){
+    tries--
+    if (tries <= 0){
+        UIWord.value = words[word]
+        check.disabled = true
+    }
+}
 
-function checkWord(){
+function count() {
+    for (var i = 0; i < lettersWord.length; i++) {
+        duplicateLetters.push(1)
+    }
+}
+
+count()
+
+function checking(){
     if (UIWord.value.length == 5){
         lettersUIWord = UIWord.value.split("")
-        for (let i = 0; i < lettersWord.length; i++) {
+        for (let i = 0; i < lettersWord.length; i++) { 
             if (words[word] == UIWord.value){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
                 check.disabled = true
             }
             else if (lettersWord[i] == lettersUIWord[i]){
+                if (duplicateLetters[i] > 0){
+                    duplicateLetters[i]--
+                }
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
                 if (guessedLetters[i] === ""){
                     guessedLetters[i] = lettersUIWord[i]
                 } 
-                if (tries > 1){
-                    gaps[i + 5].innerHTML = guessedLetters[i]
+                for (let i = 0; i < lettersWord.length; i++) {
+                    if (tries > 1){
+                        gaps[i + 5].innerHTML = guessedLetters[i]
+                    }
+                    else if (tries == 1){
+                        gaps[i].innerHTML = guessedLetters[i]
+                    }
                 }
-                else if (tries == 1){
-                    gaps[i].innerHTML = guessedLetters[i]
-                }
-            }
-            else if (lettersWord.includes(lettersUIWord[i])){
+            } 
+            else if (lettersWord.includes(lettersUIWord[i]) && lettersUIWord.includes(lettersWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rondje"
                 if (guessedLetters[i] !== "" && tries > 1){
@@ -58,7 +76,7 @@ function checkWord(){
                     gaps[i].innerHTML = guessedLetters[i]
                 }
             }
-            else if (!lettersWord.includes(lettersUIWord[i])){
+            else if (!lettersWord.includes(lettersUIWord[i]) || duplicateLetters[i] > 0){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "vierkant"
                 if (guessedLetters[i] !== "" && tries > 1){
@@ -75,35 +93,3 @@ function checkWord(){
         checkTries()
     }
 }
-
-function checkTries(){
-    tries--
-    if (tries <= 0){
-        UIWord.value = words[word]
-        check.disabled = true
-    }
-}
-
-function count() {
-    lettersWord.sort();
-
-    var current = null;
-    var cnt = 0;
-    for (var i = 0; i < lettersWord.length; i++) {
-        if (lettersWord[i] != current) {
-            if (cnt > 0) {
-                document.write(current + ' comes --> ' + cnt + ' times<br>');
-            }
-            current = lettersWord[i];
-            cnt = 1;
-        } else {
-            cnt++;
-        }
-    }
-    if (cnt > 0) {
-        document.write(current + ' comes --> ' + cnt + ' times');
-    }
-
-}
-
-count()
