@@ -5,6 +5,8 @@ let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount
 let guessedLetters = ["", "", "", "", ""]
 let duplicateLetters = [0, 0, 0, 0, 0]
 
+let tempLetters = []
+
 check.onclick = function(){checking()}
 
 setup()
@@ -20,6 +22,9 @@ function setup(){
     }
     gaps[0].innerHTML = lettersWord[0]
     guessedLetters[0] = lettersWord[0]
+    for (let i = 0; i < lettersWord.length; i++) {
+        tempLetters.push(lettersWord[i])
+    }
 }
 
 function checkTries(){
@@ -50,7 +55,6 @@ function checking(){
                 check.disabled = true
             }
             else if (lettersWord[i] == lettersUIWord[i]){
-                //duplicateLetters[i]++
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
                 if (guessedLetters[i] === ""){
@@ -65,7 +69,8 @@ function checking(){
                     }
                 }
             } 
-            else if (lettersUIWord.includes(lettersWord[i])){
+            else if (lettersWord.includes(lettersUIWord[i]) && tempLetters.includes(lettersUIWord[i])){
+                
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rondje"
                 for (let i = 0; i < lettersWord.length; i++) {
@@ -76,23 +81,14 @@ function checking(){
                         gaps[i].innerHTML = guessedLetters[i]
                     }   
                 }
-                /*for (let x = 0; x < lettersWord.length; x++) {
-                    if (lettersUIWord.includes(lettersWord[x])){
-                        gaps[i].innerHTML = lettersUIWord[i]
-                        gaps[i].className = "rondje"
-                        for (let i = 0; i < lettersWord.length; i++) {
-                            if (tries > 1){
-                                gaps[i + 5].innerHTML = guessedLetters[i]
-                            }
-                            else if (tries == 1){
-                                gaps[i].innerHTML = guessedLetters[i]
-                            }
-                        }
-                    }
+                /*let char = lettersUIWord.indexOf(i)
+                if (char > -1){
+                    tempLetters.splice(char, 1)
                 }*/
-                //duplicateLetters[i]++
+                
+                console.log(tempLetters)
             }
-            else if (!lettersUIWord.includes(lettersWord[i])){// || lettersWord.includes(lettersUIWord[i])){
+            else{
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "vierkant"
                 for (let i = 0; i < lettersWord.length; i++) {
@@ -105,42 +101,9 @@ function checking(){
                 }
             }
         }
-        //checkErrors()
         for (let i = 0; i < 5; i++) {
             gaps.shift() 
         }
         checkTries()
-    }
-}
-
-function checkErrors(){
-    if (UIWord.value.length == 5){
-        lettersUIWord = UIWord.value.split("")
-        for (let i = 0; i < lettersWord.length; i++) { 
-            if (words[word] == UIWord.value){
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "rechthoek"
-                check.disabled = true
-            }
-            else if (lettersWord[i] == lettersUIWord[i]){
-                duplicateLetters[i]--
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "rechthoek"
-                if (guessedLetters[i] === ""){
-                    guessedLetters[i] = lettersUIWord[i]
-                } 
-                gaps[i].innerHTML = lettersUIWord[i]
-            } 
-            else if (lettersWord.includes(lettersUIWord[i]) && guessedLetters.includes(lettersUIWord) || lettersWord.includes(lettersUIWord[i])){
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "rondje"
-                gaps[i].innerHTML = lettersUIWord[i]
-            }
-            else if (!lettersWord.includes(lettersUIWord[i]) || guessedLetters.includes(lettersUIWord[i])){
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "vierkant"
-                gaps[i].innerHTML = lettersUIWord[i]
-            }
-        }
     }
 }
