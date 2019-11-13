@@ -1,9 +1,10 @@
 let bord = document.getElementById('bord')
 let check = document.getElementById('check')
 let UIWord = document.getElementById('UIWord')
-let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount = 25
+let display = document.getElementById('input')
+let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount
 let guessedLetters = []
-/*let tempGoodLetters = [], */let tempIncludedLetters = []
+let tempLetters = []
 let tempFinal = []
 let guessed = "false"
 
@@ -14,6 +15,7 @@ setup()
 function setup(){
     word = Math.floor(Math.random() * words.length) + 1
     lettersWord = words[word].split("")
+    gapsAmount = words[word].length * 5
     for (let i = 0; i < gapsAmount; i++) {
         let gap = document.createElement('span')
         gap.id = "gap"
@@ -21,24 +23,25 @@ function setup(){
         gaps.push(gap)
     }
     gaps[0].innerHTML = lettersWord[0]
+    gaps[0].className = "rechthoek"
     for (let i = 0; i < lettersWord.length; i++) {
-        //tempGoodLetters.push(lettersWord[i])
-        tempIncludedLetters.push(lettersWord[i])
+        tempLetters.push(lettersWord[i])
         guessedLetters.push("")
         tempFinal.push("false")
     }
     guessedLetters.splice(0, 1, lettersWord[0])
-    console.log(words[word])
+    bord.style.gridTemplateColumns = "repeat(" + words[word].length + ", 100px)"
+    bord.style.gridTemplateRows = "repeat(" + tries + ", 100px)"
+    let width = (words[word].length * 100)
+    display.style.width = "" + width + "px"
 }
 
 function checking(){
     if (UIWord.value.length == 5){
-        console.clear()
         lettersUIWord = UIWord.value.toLowerCase().split("")
         for (let i = 0; i < lettersWord.length; i++) {
             tempFinal[i] = "false"
-            //tempGoodLetters[i] = lettersWord[i]
-            tempIncludedLetters[i] = lettersWord[i]
+            tempLetters[i] = lettersWord[i]
             if (words[word] == UIWord.value){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
@@ -50,8 +53,6 @@ function checking(){
             alert("Juist! :D Woord: " + words[word])
             location.reload()
         }
-        //console.log(lettersUIWord + " " + tempLetters)
-        //console.log(guessed)
         if (guessed == "false"){
             checkGoodPlace()
             checkWrongPlace()
@@ -62,16 +63,15 @@ function checking(){
             gaps.shift() 
         }
     }
+    checkGuessedLetters()
     checkTries()
 }
 
 function checkTries(){
     tries--
-    if (tries <= 0){
+    if (tries < 1){
         UIWord.value = words[word]
         check.disabled = true
-    }
-    if (tries == 0){
         alert("Het woord is: " + words[word])
         location.reload()
     }
@@ -83,45 +83,29 @@ function checkGoodPlace(){
             if(guessedLetters[i] == ""){
                 guessedLetters[i] = lettersUIWord[i]
             }
-            tempIncludedLetters[i] = ""
-            //tempGoodLetters[i] = ""
+            tempLetters[i] = ""
             gaps[i].innerHTML = lettersUIWord[i]
             gaps[i].className = "rechthoek"
-            //console.log(tempLetters)
-            //console.log(guessedLetters)
             tempFinal[i] = "true"
-            //console.log(tempFinal)
-            //console.log(tempGoodLetters)
-            //console.log(tempIncludedLetters)
         }
     }
 }
 
 function checkWrongPlace(){
     for (let i = 0; i < lettersWord.length; i++) {
-        /*if (tempGoodLetters.includes(lettersUIWord[i]) && lettersUIWord[i] != lettersWord[i] || */if(tempIncludedLetters.includes(lettersUIWord[i]) && lettersUIWord[i] != lettersWord[i]){ //&& tempIncludedLetters.includes(lettersUIWord[i])){
-            //console.log(tempLetters[i])
-            //console.log(tempLetters)
-            //tempIncludedLetters.remove(lettersUIWord[i])
-            let item = tempIncludedLetters.indexOf(lettersUIWord[i])
-            tempIncludedLetters.splice(item, 1, "")
-            //tempGoodLetters[i] = ""
+        if(tempLetters.includes(lettersUIWord[i]) && lettersUIWord[i] != lettersWord[i]){
+            let item = tempLetters.indexOf(lettersUIWord[i])
+            tempLetters.splice(item, 1, "")
             gaps[i].innerHTML = lettersUIWord[i]
             gaps[i].className = "rondje"
             tempFinal[i] = "true"
-            //console.log(tempFinal)
-            //console.log(tempGoodLetters)
-            //console.log(tempIncludedLetters)
-            //console.log(tempIncludedLetters)
         }
     }
 }
 
 function checkWrongLetter(){
     for (let i = 0; i < lettersWord.length; i++) {
-        /*if (!tempGoodLetters.includes(lettersUIWord[i]) && tempFinal[i] !== "true" || */if(!tempIncludedLetters.includes(lettersUIWord[i]) && tempFinal[i] !== "true"){ //&& !tempIncludedLetters.includes(lettersUIWord[i])){
-            //console.log(tempLetters[i])
-            //console.log(tempLetters)
+        if(!tempLetters.includes(lettersUIWord[i]) && tempFinal[i] !== "true"){
             gaps[i].innerHTML = lettersUIWord[i]
             gaps[i].className = "vierkant"
         }
@@ -132,10 +116,17 @@ function addGuessedLetters(){
     for (let i = 0; i < lettersWord.length; i++) {
         if (tries > 1){
             gaps[i + 5].innerHTML = guessedLetters[i]
+            if(gaps[i + 5].innerHTML !== ""){
+                gaps[i + 5].className = "rechthoek"
+            }
         }
-        
-        /*else if (tries == 1){
-            gaps[i].innerHTML = 
-        }*/
+    }
+}
+
+function checkGuessedLetters(){
+    if (JSON.stringify(guessedLetters) === JSON.stringify(lettersWord)){
+        check.disabled = true
+        alert("Juist! :D Woord: " + words[word])
+        location.reload()
     }
 }
