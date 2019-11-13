@@ -3,7 +3,7 @@ let check = document.getElementById('check')
 let UIWord = document.getElementById('UIWord')
 let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount = 25
 let guessedLetters = ["", "", "", "", ""]
-let duplicateLetters = [0, 0, 0, 0, 0]
+//let duplicateLetters = [0, 0, 0, 0, 0]
 
 let tempLetters = []
 
@@ -35,31 +35,31 @@ function checkTries(){
     }
 }
 
-function count() {
+/*function count() {
     for (var i = 0; i < lettersWord.length; i++) {
         duplicateLetters.push(1)
     }
-}
+}*/
 
 console.log(words[word])
-
-
 
 function checking(){
     if (UIWord.value.length == 5){
         lettersUIWord = UIWord.value.split("")
-        for (let i = 0; i < lettersWord.length; i++) { 
+        tempLetters = lettersWord
+        for (let i = 0; i < lettersWord.length + 1; i++) { 
             if (words[word] == UIWord.value){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
                 check.disabled = true
             }
-            else if (lettersWord[i] == lettersUIWord[i]){
+            else if (lettersUIWord[i] == lettersWord[i]){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rechthoek"
                 if (guessedLetters[i] === ""){
                     guessedLetters[i] = lettersUIWord[i]
                 } 
+                tempLetters.splice(i, 1)
                 for (let i = 0; i < lettersWord.length; i++) {
                     if (tries > 1){
                         gaps[i + 5].innerHTML = guessedLetters[i]
@@ -69,8 +69,7 @@ function checking(){
                     }
                 }
             } 
-            else if (lettersWord.includes(lettersUIWord[i]) && tempLetters.includes(lettersUIWord[i])){
-                
+            else if (tempLetters.includes(lettersUIWord[i])){// && tempLetters.includes(lettersUIWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "rondje"
                 for (let i = 0; i < lettersWord.length; i++) {
@@ -88,7 +87,7 @@ function checking(){
                 
                 console.log(tempLetters)
             }
-            else{
+            else if (!tempLetters.includes(lettersUIWord[i])){
                 gaps[i].innerHTML = lettersUIWord[i]
                 gaps[i].className = "vierkant"
                 for (let i = 0; i < lettersWord.length; i++) {
