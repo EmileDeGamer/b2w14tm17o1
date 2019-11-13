@@ -37,7 +37,7 @@ function setup(){
 }
 
 function checking(){
-    if (UIWord.value.length == 5){
+    if (UIWord.value.length == lettersWord.length){
         lettersUIWord = UIWord.value.toLowerCase().split("")
         for (let i = 0; i < lettersWord.length; i++) {
             tempFinal[i] = "false"
@@ -59,17 +59,17 @@ function checking(){
             checkWrongLetter()
             addGuessedLetters()
         }
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < lettersWord.length; i++) {
             gaps.shift() 
         }
+        checkGuessedLetters()
+        checkTries()
     }
-    checkGuessedLetters()
-    checkTries()
 }
 
 function checkTries(){
     tries--
-    if (tries < 1){
+    if (tries == 0){
         UIWord.value = words[word]
         check.disabled = true
         alert("Het woord is: " + words[word])
@@ -115,9 +115,9 @@ function checkWrongLetter(){
 function addGuessedLetters(){
     for (let i = 0; i < lettersWord.length; i++) {
         if (tries > 1){
-            gaps[i + 5].innerHTML = guessedLetters[i]
-            if(gaps[i + 5].innerHTML !== ""){
-                gaps[i + 5].className = "rechthoek"
+            gaps[i + lettersWord.length].innerHTML = guessedLetters[i]
+            if(gaps[i + lettersWord.length].innerHTML !== ""){
+                gaps[i + lettersWord.length].className = "rechthoek"
             }
         }
     }

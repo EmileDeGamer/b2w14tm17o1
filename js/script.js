@@ -1,11 +1,12 @@
 let bord = document.getElementById('bord')
 let check = document.getElementById('check')
 let UIWord = document.getElementById('UIWord')
-let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount = 25
-let guessedLetters = ["", "", "", "", ""]
-//let duplicateLetters = [0, 0, 0, 0, 0]
-
+let display = document.getElementById('input')
+let word, lettersWord = [], lettersUIWord = [], gaps = [], tries = 5, gapsAmount
+let guessedLetters = []
 let tempLetters = []
+let tempFinal = []
+let guessed = "false"
 
 check.onclick = function(){checking()}
 
@@ -14,6 +15,7 @@ setup()
 function setup(){
     word = Math.floor(Math.random() * words.length) + 1
     lettersWord = words[word].split("")
+    gapsAmount = words[word].length * 5
     for (let i = 0; i < gapsAmount; i++) {
         let gap = document.createElement('span')
         gap.id = "gap"
@@ -21,88 +23,110 @@ function setup(){
         gaps.push(gap)
     }
     gaps[0].innerHTML = lettersWord[0]
-    guessedLetters[0] = lettersWord[0]
+    gaps[0].className = "rechthoek"
     for (let i = 0; i < lettersWord.length; i++) {
         tempLetters.push(lettersWord[i])
+        guessedLetters.push("")
+        tempFinal.push("false")
+    }
+    guessedLetters.splice(0, 1, lettersWord[0])
+    bord.style.gridTemplateColumns = "repeat(" + words[word].length + ", 100px)"
+    bord.style.gridTemplateRows = "repeat(" + tries + ", 100px)"
+    let width = (words[word].length * 100)
+    display.style.width = "" + width + "px"
+}
+
+function checking(){
+    if (UIWord.value.length == lettersWord.length){
+        lettersUIWord = UIWord.value.toLowerCase().split("")
+        for (let i = 0; i < lettersWord.length; i++) {
+            tempFinal[i] = "false"
+            tempLetters[i] = lettersWord[i]
+            if (words[word] == UIWord.value){
+                gaps[i].innerHTML = lettersUIWord[i]
+                gaps[i].className = "rechthoek"
+                check.disabled = true
+                guessed = "true"
+            }
+        }
+        if (guessed == "true"){
+            alert("Juist! :D Woord: " + words[word])
+            location.reload()
+        }
+        if (guessed == "false"){
+            checkGoodPlace()
+            checkWrongPlace()
+            checkWrongLetter()
+            addGuessedLetters()
+        }
+        for (let i = 0; i < lettersWord.length; i++) {
+            gaps.shift() 
+        }
+        checkGuessedLetters()
+        checkTries()
     }
 }
 
 function checkTries(){
     tries--
-    if (tries <= 0){
+    if (tries == 0){
         UIWord.value = words[word]
         check.disabled = true
+        alert("Het woord is: " + words[word])
+        location.reload()
     }
 }
 
-/*function count() {
-    for (var i = 0; i < lettersWord.length; i++) {
-        duplicateLetters.push(1)
+function checkGoodPlace(){
+    for (let i = 0; i < lettersWord.length; i++) {
+        if (lettersUIWord[i] == lettersWord[i]){
+            if(guessedLetters[i] == ""){
+                guessedLetters[i] = lettersUIWord[i]
+            }
+            tempLetters[i] = ""
+            gaps[i].innerHTML = lettersUIWord[i]
+            gaps[i].className = "rechthoek"
+            tempFinal[i] = "true"
+        }
     }
-}*/
+}
 
-console.log(words[word])
+function checkWrongPlace(){
+    for (let i = 0; i < lettersWord.length; i++) {
+        if(tempLetters.includes(lettersUIWord[i]) && lettersUIWord[i] != lettersWord[i]){
+            let item = tempLetters.indexOf(lettersUIWord[i])
+            tempLetters.splice(item, 1, "")
+            gaps[i].innerHTML = lettersUIWord[i]
+            gaps[i].className = "rondje"
+            tempFinal[i] = "true"
+        }
+    }
+}
 
-function checking(){
-    if (UIWord.value.length == 5){
-        lettersUIWord = UIWord.value.split("")
-        tempLetters = lettersWord
-        for (let i = 0; i < lettersWord.length + 1; i++) { 
-            if (words[word] == UIWord.value){
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "rechthoek"
-                check.disabled = true
-            }
-            else if (lettersUIWord[i] == lettersWord[i]){
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "rechthoek"
-                if (guessedLetters[i] === ""){
-                    guessedLetters[i] = lettersUIWord[i]
-                } 
-                tempLetters.splice(i, 1)
-                for (let i = 0; i < lettersWord.length; i++) {
-                    if (tries > 1){
-                        gaps[i + 5].innerHTML = guessedLetters[i]
-                    }
-                    else if (tries == 1){
-                        gaps[i].innerHTML = guessedLetters[i]
-                    }
-                }
-            } 
-            else if (tempLetters.includes(lettersUIWord[i])){// && tempLetters.includes(lettersUIWord[i])){
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "rondje"
-                for (let i = 0; i < lettersWord.length; i++) {
-                    if (tries > 1){
-                        gaps[i + 5].innerHTML = guessedLetters[i]
-                    }
-                    else if (tries == 1){
-                        gaps[i].innerHTML = guessedLetters[i]
-                    }   
-                }
-                /*let char = lettersUIWord.indexOf(i)
-                if (char > -1){
-                    tempLetters.splice(char, 1)
-                }*/
-                
-                console.log(tempLetters)
-            }
-            else if (!tempLetters.includes(lettersUIWord[i])){
-                gaps[i].innerHTML = lettersUIWord[i]
-                gaps[i].className = "vierkant"
-                for (let i = 0; i < lettersWord.length; i++) {
-                    if (tries > 1){
-                        gaps[i + 5].innerHTML = guessedLetters[i]
-                    }
-                    else if (tries == 1){
-                        gaps[i].innerHTML = guessedLetters[i]
-                    }
-                }
+function checkWrongLetter(){
+    for (let i = 0; i < lettersWord.length; i++) {
+        if(!tempLetters.includes(lettersUIWord[i]) && tempFinal[i] !== "true"){
+            gaps[i].innerHTML = lettersUIWord[i]
+            gaps[i].className = "vierkant"
+        }
+    }
+}
+
+function addGuessedLetters(){
+    for (let i = 0; i < lettersWord.length; i++) {
+        if (tries > 1){
+            gaps[i + lettersWord.length].innerHTML = guessedLetters[i]
+            if(gaps[i + lettersWord.length].innerHTML !== ""){
+                gaps[i + lettersWord.length].className = "rechthoek"
             }
         }
-        for (let i = 0; i < 5; i++) {
-            gaps.shift() 
-        }
-        checkTries()
+    }
+}
+
+function checkGuessedLetters(){
+    if (JSON.stringify(guessedLetters) === JSON.stringify(lettersWord)){
+        check.disabled = true
+        alert("Juist! :D Woord: " + words[word])
+        location.reload()
     }
 }
