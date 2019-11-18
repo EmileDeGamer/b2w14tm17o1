@@ -3,6 +3,7 @@ body{
     display: grid;
     grid-template-columns: repeat(1, auto);
     grid-template-rows: repeat(2, auto);
+    overflow: hidden;
 }
 
 #input{
@@ -44,6 +45,13 @@ body{
     border: 50px solid yellow;
     border-top: 0px;
     background: white;
+}
+
+#lingoBord{
+    display: grid;
+    position: relative;
+    bottom: 110%;
+    left: 2.5%;
 }
 
 #gap{
